@@ -173,13 +173,36 @@ StringTools.replace = function(s,sub,by) {
 };
 var TodoFrontendApp = function() { };
 TodoFrontendApp.__name__ = true;
+TodoFrontendApp.rerenderForm = function(todoFormWidget,todoPageWidget) {
+	urals_web_BrowserRenderer_browserRender(TodoFrontendApp.formModels,function(el) {
+		return "." + todoPageWidget.adv.formContainerClass;
+	},todoFormWidget.renderBundle,function(elHtml2,el2) {
+		console.log("src/TodoFrontendApp.hx:41:","#" + todoFormWidget.adv.headerInputId);
+		elHtml2.querySelector("#" + todoFormWidget.adv.headerInputId).onchange = function(event) {
+			var input = window.document.querySelector("#" + todoFormWidget.adv.headerInputId);
+			var val = input.value;
+			var elems = TodoFrontendApp.todoElemsStor.readAll();
+			var result = new Array(elems.length);
+			var _g = 0;
+			var _g1 = elems.length;
+			while(_g < _g1) {
+				var i = _g++;
+				result[i] = elems[i].val;
+			}
+			var newElemVals = result.concat([{ header : val, isChecked : false}]);
+			TodoFrontendApp.todoElemsStor.reInit(newElemVals);
+			TodoFrontendApp.rerenderForm(todoFormWidget,todoPageWidget);
+		};
+	});
+};
 TodoFrontendApp.main = function() {
 	var todoElemsIdRenderer = new urals_IntIdRenderer("todo_el_");
 	var todoElemWidget = widgets_TodoElemWidget_todoElemWidgetFactory("todo-el",$bind(todoElemsIdRenderer,todoElemsIdRenderer.renderId));
 	var todoPageWidget = widgets_TodoPageWidget_todoPageWidgetFactory("todo-page");
+	var todoFormWidget = widgets_TodoFormWidget_todoFormWidgetFactory("todo-form");
 	TodoFrontendApp.todoElemsStor = new urals_storage_BasicReactiveStorage(urals_storage_IdGenFunctions_genIntId,function(data) {
 		urals_web_BrowserRenderer_browserRender(data,function(el) {
-			return "." + todoPageWidget.adv.containerClass;
+			return "." + todoPageWidget.adv.elsContainerClass;
 		},todoElemWidget.renderBundle,function(elHtml,el) {
 			todoElemWidget.adv.setOnChangeFunction(elHtml,el,TodoFrontendApp.todoElemsStor);
 		});
@@ -188,6 +211,7 @@ TodoFrontendApp.main = function() {
 		return "body";
 	},todoPageWidget.renderBundle,function(elHtml,el) {
 		TodoFrontendApp.todoElemsStor.reInit([{ header : "Почистить зубы", isChecked : false},{ header : "Помыть кота", isChecked : true}]);
+		TodoFrontendApp.rerenderForm(todoFormWidget,todoPageWidget);
 	});
 	var allStyles = [todoElemWidget.css,todoPageWidget.css].join("\n\n");
 	var htmlInjector = new urals_web_BrowserHtmlInjector(window.document.querySelector("html"));
@@ -3134,12 +3158,24 @@ function widgets_TodoElemWidget_todoElemWidgetFactory(className,renderId) {
 		};
 	}}};
 }
+function widgets_TodoFormWidget_todoFormWidgetFactory(className) {
+	var headerFieldClass = className + "-header-filed";
+	var renderId = function(el) {
+		return "todoForm";
+	};
+	var headerInputId = renderId(1) + "Input";
+	return { renderBundle : { template : function(el,id) {
+		return "\r\n            <div class=\"" + className + "\" id=\"" + renderId(id) + "\">\r\n                <div class=\"" + headerFieldClass + "\">\r\n                    <label for=\"" + headerInputId + "\">Название задачи</label>\r\n                    <input type=\"text\" id=\"" + headerInputId + "\" val=\"\">\r\n                </div>\r\n            </div>";
+	}, renderId : renderId}, css : "\r\n        ." + headerFieldClass + " {display: grid; grid-template-columns: 150px 1fr; grid-gap: 10px;}", className : className, adv : { headerFieldClass : headerFieldClass, headerInputId : headerInputId}};
+}
 function widgets_TodoPageWidget_todoPageWidgetFactory(className) {
+	var elsContainerClass = "" + className + "-els";
+	var formContainerClass = "" + className + "-form";
 	return { renderBundle : { template : function(m,id) {
-		return "\r\n            <div class=\"" + className + "\" id=\"todoPage\">\r\n                <h1>Todo app</h1>\r\n                <div class=\"" + className + "-container\">\r\n                </div>\r\n            </div>";
+		return "\r\n            <div class=\"" + className + "\" id=\"todoPage\">\r\n                <h1>Todo app</h1>\r\n                <div class=\"" + elsContainerClass + "\">\r\n                </div>\r\n                <hr>\r\n                <div class=\"" + formContainerClass + "\"></div>\r\n            </div>";
 	}, renderId : function(id) {
 		return "todoPage";
-	}}, css : "\r\n        ." + className + " > h1 {padding: 0; margin: 0;}\r\n        ." + className + " {display: grid; grid-gap: 20px;}\r\n        ." + className + "-container {display: grid; grid-gap: 10px;}", className : className, adv : { containerClass : className + "-container"}};
+	}}, css : "\r\n        ." + className + " > h1 {padding: 0; margin: 0;}\r\n        ." + className + " {display: grid; grid-gap: 20px; max-width: 400px;}\r\n        ." + className + "-container {display: grid; grid-gap: 10px;}", className : className, adv : { elsContainerClass : elsContainerClass, formContainerClass : formContainerClass}};
 }
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
@@ -3159,6 +3195,7 @@ var Class = { };
 var Enum = { };
 js_Boot.__toStr = ({ }).toString;
 TodoFrontendApp.pageModels = [{ id : 1, val : { }}];
+TodoFrontendApp.formModels = [{ id : 1, val : { header : ""}}];
 haxe_Int32._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };
