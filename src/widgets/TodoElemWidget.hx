@@ -29,10 +29,11 @@ function todoElemWidgetFactory<Id>(
                 return '
                 <div class="${className}" 
                      id="${renderId(id)}">
-                    <input type="checkbox"${(m.isChecked == true) ? " checked" : ""}>
-                    <div${(m.isChecked == true) ? ' style="text-decoration: line-through;"' : ''}>
+                    <input id="${renderId(id)}_inp" type="checkbox"${(m.isChecked == true) ? " checked" : ""}>
+                    <label${(m.isChecked == true) ? ' style="text-decoration: line-through;"' : ''}
+                     for="${renderId(id)}_inp">
                         ${m.header}
-                    </div>
+                    </label>
                 </div>';
             },
             renderId: renderId

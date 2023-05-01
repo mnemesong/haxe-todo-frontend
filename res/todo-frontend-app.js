@@ -3109,7 +3109,7 @@ uuid_Uuid.short = function(toAlphabet,randomFunc) {
 };
 function widgets_TodoElemWidget_todoElemWidgetFactory(className,renderId) {
 	return { renderBundle : { template : function(m,id) {
-		return "\r\n                <div class=\"" + className + "\" \r\n                     id=\"" + renderId(id) + "\">\r\n                    <input type=\"checkbox\"" + (m.isChecked == true ? " checked" : "") + ">\r\n                    <div" + (m.isChecked == true ? " style=\"text-decoration: line-through;\"" : "") + ">\r\n                        " + m.header + "\r\n                    </div>\r\n                </div>";
+		return "\r\n                <div class=\"" + className + "\" \r\n                     id=\"" + renderId(id) + "\">\r\n                    <input id=\"" + renderId(id) + "_inp\" type=\"checkbox\"" + (m.isChecked == true ? " checked" : "") + ">\r\n                    <label" + (m.isChecked == true ? " style=\"text-decoration: line-through;\"" : "") + "\r\n                     for=\"" + renderId(id) + "_inp\">\r\n                        " + m.header + "\r\n                    </label>\r\n                </div>";
 	}, renderId : renderId}, css : "." + className + " {display: grid; grid-template-columns: 30px 1fr; grid-gap: 10px;}", className : className, adv : { setOnChangeFunction : function(elemHtml,elem,stor) {
 		elemHtml.querySelector("input").onchange = function(event) {
 			var elems = stor.readAll();
