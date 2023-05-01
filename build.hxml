@@ -1,0 +1,7 @@
+--library urals-renderer-web-js
+--library urals-renderer-web
+--library urals-id-renderer
+--library urals-storage
+--class-path src
+--main TodoFrontendApp
+--js res/todo-frontend-app.js
