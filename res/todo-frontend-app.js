@@ -177,7 +177,7 @@ TodoFrontendApp.rerenderForm = function(todoFormWidget,todoPageWidget) {
 	urals_web_BrowserRenderer_browserRender(TodoFrontendApp.formModels,function(el) {
 		return "." + todoPageWidget.adv.formContainerClass;
 	},todoFormWidget.renderBundle,function(elHtml2,el2) {
-		console.log("src/TodoFrontendApp.hx:41:","#" + todoFormWidget.adv.headerInputId);
+		console.log("src/TodoFrontendApp.hx:44:","#" + todoFormWidget.adv.headerInputId);
 		elHtml2.querySelector("#" + todoFormWidget.adv.headerInputId).onchange = function(event) {
 			var input = window.document.querySelector("#" + todoFormWidget.adv.headerInputId);
 			var val = input.value;
@@ -195,6 +195,29 @@ TodoFrontendApp.rerenderForm = function(todoFormWidget,todoPageWidget) {
 		};
 	});
 };
+TodoFrontendApp.setOnChangeFunction = function(elemHtml,elem,stor) {
+	elemHtml.querySelector("input").onchange = function(event) {
+		var elems = stor.readAll();
+		var result = new Array(elems.length);
+		var _g = 0;
+		var _g1 = elems.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var el = elems[i];
+			result[i] = el.id == elem.id ? { id : elem.id, val : { isChecked : !elem.val.isChecked, header : elem.val.header}} : el;
+		}
+		elems = result;
+		var stor1 = stor;
+		var result = new Array(elems.length);
+		var _g = 0;
+		var _g1 = elems.length;
+		while(_g < _g1) {
+			var i = _g++;
+			result[i] = elems[i].val;
+		}
+		stor1.reInit(result);
+	};
+};
 TodoFrontendApp.main = function() {
 	var todoElemsIdRenderer = new urals_IntIdRenderer("todo_el_");
 	var todoElemWidget = widgets_TodoElemWidget_todoElemWidgetFactory("todo-el",$bind(todoElemsIdRenderer,todoElemsIdRenderer.renderId));
@@ -204,7 +227,7 @@ TodoFrontendApp.main = function() {
 		urals_web_BrowserRenderer_browserRender(data,function(el) {
 			return "." + todoPageWidget.adv.elsContainerClass;
 		},todoElemWidget.renderBundle,function(elHtml,el) {
-			todoElemWidget.adv.setOnChangeFunction(elHtml,el,TodoFrontendApp.todoElemsStor);
+			TodoFrontendApp.setOnChangeFunction(elHtml,el,TodoFrontendApp.todoElemsStor);
 		});
 	});
 	urals_web_BrowserRenderer_browserRender(TodoFrontendApp.pageModels,function(el) {
@@ -3134,29 +3157,7 @@ uuid_Uuid.short = function(toAlphabet,randomFunc) {
 function widgets_TodoElemWidget_todoElemWidgetFactory(className,renderId) {
 	return { renderBundle : { template : function(m,id) {
 		return "\r\n                <div class=\"" + className + "\" \r\n                     id=\"" + renderId(id) + "\">\r\n                    <input id=\"" + renderId(id) + "_inp\" type=\"checkbox\"" + (m.isChecked == true ? " checked" : "") + ">\r\n                    <label" + (m.isChecked == true ? " style=\"text-decoration: line-through;\"" : "") + "\r\n                     for=\"" + renderId(id) + "_inp\">\r\n                        " + m.header + "\r\n                    </label>\r\n                </div>";
-	}, renderId : renderId}, css : "." + className + " {display: grid; grid-template-columns: 30px 1fr; grid-gap: 10px;}", className : className, adv : { setOnChangeFunction : function(elemHtml,elem,stor) {
-		elemHtml.querySelector("input").onchange = function(event) {
-			var elems = stor.readAll();
-			var result = new Array(elems.length);
-			var _g = 0;
-			var _g1 = elems.length;
-			while(_g < _g1) {
-				var i = _g++;
-				var el = elems[i];
-				result[i] = el.id == elem.id ? { id : elem.id, val : { isChecked : !elem.val.isChecked, header : elem.val.header}} : el;
-			}
-			elems = result;
-			var stor1 = stor;
-			var result = new Array(elems.length);
-			var _g = 0;
-			var _g1 = elems.length;
-			while(_g < _g1) {
-				var i = _g++;
-				result[i] = elems[i].val;
-			}
-			stor1.reInit(result);
-		};
-	}}};
+	}, renderId : renderId}, css : "." + className + " {display: grid; grid-template-columns: 30px 1fr; grid-gap: 10px;}", className : className, adv : { }};
 }
 function widgets_TodoFormWidget_todoFormWidgetFactory(className) {
 	var headerFieldClass = className + "-header-filed";

@@ -1,8 +1,5 @@
 package widgets;
 
-import urals.storage.BasicReactiveStorage;
-import urals.storage.StorageTypes.Entity;
-import js.html.Element;
 import Types.Widget;
 
 typedef TodoFormModel = {

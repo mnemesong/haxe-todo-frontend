@@ -16,6 +16,9 @@ import urals.storage.BasicReactiveStorage;
 import widgets.TodoFormWidget.TodoFormAdv;
 import widgets.TodoPageWidget.TodoPageAdv;
 import widgets.TodoPageWidget.TodoPageModel;
+import js.html.Element;
+import urals.storage.StorageTypes;
+import urals.storage.BasicStorageInterface;
 
 using Lambda;
 
@@ -54,6 +57,21 @@ class TodoFrontendApp
         );
     }
 
+    private static function setOnChangeFunction<Id>(
+        elemHtml: Element, 
+        elem: Entity<TodoElemModel, Id>,
+        stor: BasicStorageInterface<TodoElemModel, Id>
+    ): Void {
+        elemHtml.querySelector('input')
+            .onchange = (event) -> {
+                var elems = stor.readAll();
+                elems = elems.map(el -> (el.id == elem.id) 
+                    ? { id: elem.id, val: {isChecked: !elem.val.isChecked, header: elem.val.header}}
+                    : el);
+                stor.reInit(elems.map(el -> el.val));
+            }
+    }
+
     public static function main() {
         var todoElemsIdRenderer = new IntIdRenderer("todo_el_");
 
@@ -68,7 +86,7 @@ class TodoFrontendApp
                 (el) -> "." + todoPageWidget.adv.elsContainerClass,
                 todoElemWidget.renderBundle,
                 (elHtml, el) -> {
-                    todoElemWidget.adv.setOnChangeFunction(elHtml, el, todoElemsStor);
+                    setOnChangeFunction(elHtml, el, todoElemsStor);
                 }
             )
         );

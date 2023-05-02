@@ -1,9 +1,5 @@
 package widgets;
 
-import urals.storage.StorageTypes.Entity;
-import urals.storage.BasicStorageInterface;
-import js.html.Element;
-import js.Browser;
 import Types.Widget;
 
 typedef TodoElemModel = {
@@ -12,11 +8,6 @@ typedef TodoElemModel = {
 }
 
 typedef TodoElemAdv<Id> = {
-    setOnChangeFunction: (
-        elemHtml: Element, 
-        elem: Entity<TodoElemModel, Id>,
-        stor: BasicStorageInterface<TodoElemModel, Id>
-    ) -> Void,
 }
 
 function todoElemWidgetFactory<Id>(
@@ -41,20 +32,6 @@ function todoElemWidgetFactory<Id>(
         css: '.${className} {display: grid; grid-template-columns: 30px 1fr; grid-gap: 10px;}',
         className: className,
         adv: {
-            setOnChangeFunction: (
-                    elemHtml: Element, 
-                    elem: Entity<TodoElemModel, Id>,
-                    stor: BasicStorageInterface<TodoElemModel, Id>
-                ) -> {
-                    elemHtml.querySelector('input')
-                        .onchange = (event) -> {
-                            var elems = stor.readAll();
-                            elems = elems.map(el -> (el.id == elem.id) 
-                                ? { id: elem.id, val: {isChecked: !elem.val.isChecked, header: elem.val.header}}
-                                : el);
-                            stor.reInit(elems.map(el -> el.val));
-                        }
-                }
         }
     }
 }
