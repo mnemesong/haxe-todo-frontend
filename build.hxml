@@ -3,5 +3,6 @@
 --library urals-id-renderer
 --library urals-storage
 --class-path src
+--class-path src.js
 --main TodoFrontendApp
 --js res/todo-frontend-app.js
