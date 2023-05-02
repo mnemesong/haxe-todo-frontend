@@ -78,4 +78,12 @@ class TodoAppRunner
             {header: "Помыть кота", isChecked: true},
         ]);
     }
+
+    public function getCss(): String {
+        return [
+            elemWidget.css,
+            formWidget.css,
+            pageWidget.css
+        ].join("\n\n");
+    }
 }

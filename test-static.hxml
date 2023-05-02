@@ -1,0 +1,8 @@
+--library urals-renderer-web-js
+--library urals-renderer-web
+--library urals-id-renderer
+--library urals-storage
+--class-path src
+--class-path manager
+-D no-deprecation-warnings
+--run TodoAppManager
